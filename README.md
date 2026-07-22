@@ -2,20 +2,7 @@
 
 Playwright fixtures for the [chobitmail](https://chobitmail.com) disposable email API.
 
-Create a one-time inbox per test, wait for mail (with 408 reconnect), and use pre-extracted OTP codes and verification links.
-
-## Free tier limits (read this first)
-
-| Limit | Free (unverified) | With verified sender domain |
-| --- | --- | --- |
-| Concurrent active inboxes | **1** | **2** |
-| Inbox creates / day (UTC) | **5** | **50** |
-| Messages received / day (UTC) | **5** | **50** |
-
-- The fixture **auto-deletes** the inbox after each test so concurrent slots free up.
-- **`workers=1` only helps concurrent**, not daily create/message caps.
-- **Do not share one API key** across CI shards / matrix jobs.
-- For larger suites: verify a sender domain, use a higher plan, or develop against local `CHOBITMAIL_BASE_URL` + seed key.
+Create a one-time inbox per test, wait for mail, and use pre-extracted OTP codes and verification links.
 
 ## Requirements
 
@@ -30,13 +17,14 @@ pnpm add -D @chobitmail/playwright
 # peer: @playwright/test already in your project
 ```
 
-Runnable sample in this monorepo: [`example/playwright`](../../example/playwright)（OTP / verify-link / manual inbox）.
-
 ```bash
 export CHOBITMAIL_API_KEY=cbm_live_...
-# optional:
-# export CHOBITMAIL_BASE_URL=https://chobitmail.com
-# export CHOBITMAIL_DEBUG=1
+```
+
+### Skills
+
+```bash
+npx skills add chobitapp/chobitmail-skills
 ```
 
 ## 3-line happy path
@@ -58,16 +46,16 @@ test("signup OTP", async ({ page, inbox }) => {
 
 ## API overview
 
-| Fixture / API | Role |
-| --- | --- |
-| `inbox` | Per-test auto create + auto delete |
-| `chobitmail` | Shared client (extra inboxes, usage) |
-| `inboxOptions` | `test.use({ inboxOptions: { ttl, autoCreate, autoDelete } })` |
-| `inbox.waitForMessage` | Long-poll with 408 reconnect |
-| `inbox.waitForCode` | First matching message → pick OTP (fail-fast) |
-| `inbox.waitForLink` | First matching message → pick URL (fail-fast) |
-| `ChobitmailClient` | Use without Playwright fixtures |
-| `runWithInbox` | create / use / delete lifecycle helper |
+| Fixture / API          | Role                                                          |
+| ---------------------- | ------------------------------------------------------------- |
+| `inbox`                | Per-test auto create + auto delete                            |
+| `chobitmail`           | Shared client (extra inboxes, usage)                          |
+| `inboxOptions`         | `test.use({ inboxOptions: { ttl, autoCreate, autoDelete } })` |
+| `inbox.waitForMessage` | Long-poll with 408 reconnect                                  |
+| `inbox.waitForCode`    | First matching message → pick OTP (fail-fast)                 |
+| `inbox.waitForLink`    | First matching message → pick URL (fail-fast)                 |
+| `ChobitmailClient`     | Use without Playwright fixtures                               |
+| `runWithInbox`         | create / use / delete lifecycle helper                        |
 
 ### Selection semantics (fail-fast)
 
@@ -158,20 +146,18 @@ export default defineConfig({
 
 ## Errors
 
-| Class | When |
-| --- | --- |
-| `ChobitmailConfigError` | Missing `CHOBITMAIL_API_KEY`, or `inbox` used with `autoCreate: false` |
-| `ChobitmailQuotaError` | `reason: "concurrent" \| "daily"` |
-| `ChobitmailTimeoutError` | No matching mail before deadline |
-| `ChobitmailSelectionError` | Mail arrived but no code/link matched (`code: "no_code" \| "no_link"`) |
-| `ChobitmailNotFoundError` | Inbox expired / wrong id |
-| `ChobitmailAuthError` / `Forbidden` | Auth |
+| Class                               | When                                                                   |
+| ----------------------------------- | ---------------------------------------------------------------------- |
+| `ChobitmailConfigError`             | Missing `CHOBITMAIL_API_KEY`, or `inbox` used with `autoCreate: false` |
+| `ChobitmailQuotaError`              | `reason: "concurrent" \| "daily"`                                      |
+| `ChobitmailTimeoutError`            | No matching mail before deadline                                       |
+| `ChobitmailSelectionError`          | Mail arrived but no code/link matched (`code: "no_code" \| "no_link"`) |
+| `ChobitmailNotFoundError`           | Inbox expired / wrong id                                               |
+| `ChobitmailAuthError` / `Forbidden` | Auth                                                                   |
 
 ## Source
 
 - Product: [chobitmail.com](https://chobitmail.com)
-- Public mirror: [chobitapp/chobitmail-playwright](https://github.com/chobitapp/chobitmail-playwright)
-- Design: see monorepo `docs/playwright-fixture-design.md`
 
 ## License
 

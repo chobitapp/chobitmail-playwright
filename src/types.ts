@@ -71,15 +71,19 @@ export type WaitForLinkOptions = WaitForMessageOptions & {
 
 export type Usage = {
   teamId: string;
-  unlimited: boolean;
+  plan: "free" | "pro";
+  complimentaryPro: boolean;
   verified: boolean;
   concurrent: { used: number; limit: number | null };
   dailyInboxes: { used: number; limit: number | null };
   dailyMessages: { used: number; limit: number | null };
+  ttl: { defaultSeconds: number; maxSeconds: number };
+  maxDomains: number;
+  maxApiKeys: number;
 };
 
 export type InboxFixtureOptions = {
-  /** 作成時 TTL 秒。API は 60–600 に clamp。既定 600 */
+  /** 作成時 TTL 秒。Free は 60–600、Pro は 60–86400 に clamp */
   ttl?: number;
   /** false で teardown DELETE をスキップ。既定 true */
   autoDelete?: boolean;

@@ -275,7 +275,7 @@ export class ChobitmailClient {
       if (reason === "daily") {
         throw new ChobitmailQuotaError(
           "Daily inbox create quota exceeded (free unverified: 5/day UTC; verified: 50). " +
-            "Reduce mail E2E count, verify a sender domain, use unlimited team, " +
+            "Reduce mail E2E count, verify a sender domain, use a Pro (or local PRO_TEAM_IDS) team, " +
             "or develop against local CHOBITMAIL_BASE_URL + seed key. GET /api/usage.",
           "daily",
           status,
