@@ -1,0 +1,59 @@
+{
+  "name": "@chobitmail/playwright",
+  "version": "0.1.0",
+  "description": "Playwright fixtures for chobitmail disposable email API",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chobitapp/chobitmail-playwright.git",
+    "directory": "."
+  },
+  "homepage": "https://chobitmail.com",
+  "bugs": {
+    "url": "https://github.com/chobitapp/chobitmail-playwright/issues"
+  },
+  "keywords": [
+    "playwright",
+    "email",
+    "e2e",
+    "otp",
+    "disposable-email",
+    "chobitmail"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@playwright/test": ">=1.42.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "@types/node": "^26.1.1",
+    "tsup": "^8.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^4.1.10"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "prepublishOnly": "pnpm run build"
+  }
+}
